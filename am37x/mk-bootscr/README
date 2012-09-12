@@ -4,10 +4,10 @@ MMC/SD card images need a boot script that reads uImage (Linux kernel Image), se
 
 The default boot.scr generated will 
 
-1) load uImage to 0x80200000 from dos partition of MMC/SD card
+1) load uImage to 0x82000000 from dos partition of MMC/SD card
 
 2) Sets default bootargs to
-'console=ttyO0,115200n8 androidboot.console=ttyO0 mem=256M root=/dev/mmcblk0p2 rw rootfstype=ext3 rootdelay=1 init=/init ip=off omap_vout.vid1_static_vrfb_alloc=y vram=8M omapfb.vram=0:8M' 
+'console=ttyO2,115200n8 androidboot.console=ttyO2 mem=512M root=/dev/mmcblk0p2 rw rootfstype=ext4 rootwait init=/init ip=off omap_vout.vid1_static_vrfb_alloc=y vram=8M omapfb.vram=0:8M omapdss.def_disp=dvi omapfb.mode=dvi:1024x768-16'
 
 3) Creates boot.scr with mkimage header. The mkimage utility needed for this command is also included in this directory
 
