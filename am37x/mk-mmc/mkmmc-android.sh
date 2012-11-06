@@ -77,36 +77,41 @@ echo ,,0x0C,-
 
 echo "[Making filesystems...]"
 
-mkfs.vfat -F 32 -n boot "$1"1 &> /dev/null
-mkfs.ext4 -L rootfs "$1"2 &> /dev/null
-mkfs.vfat -F 32 -n data "$1"3 &> /dev/null
+if [[ ${DRIVE} == /dev/*mmcblk* ]]
+then
+	DRIVE=${DRIVE}p
+fi
+
+mkfs.vfat -F 32 -n boot ${DRIVE}1 &> /dev/null
+mkfs.ext4 -L rootfs ${DRIVE}2 &> /dev/null
+mkfs.vfat -F 32 -n data ${DRIVE}3 &> /dev/null
 
 echo "[Copying files...]"
 
-mount "$1"1 /mnt
+mount ${DRIVE}1 /mnt
 cp $2 /mnt/MLO
 cp $3 /mnt/u-boot.bin
 cp $4 /mnt/uImage
 cp $5 /mnt/boot.scr
 if [ "$8" ]
 then
-        echo "[Copying START_HERE floder to boot partition]"
+        echo "[Copying START_HERE folder to boot partition]"
         cp -r $8 /mnt/START_HERE
 fi
 
-umount "$1"1
+umount ${DRIVE}1
 
-mount "$1"2 /mnt
+mount ${DRIVE}2 /mnt
 tar jxvf $6 -C /mnt &> /dev/null
 chmod 755 /mnt
-umount "$1"2
+umount ${DRIVE}2
 
 if [ "$7" ]
 then
 	echo "[Copying all clips to data partition]"
-	mount "$1"3 /mnt
+	mount ${DRIVE}3 /mnt
 	cp -r $7/* /mnt/
-	umount "$1"3
+	umount ${DRIVE}3
 fi
 
 echo "[Done]"
