@@ -84,7 +84,7 @@ fi
 
 mkfs.vfat -F 32 -n boot ${DRIVE}1 &> /dev/null
 mkfs.ext4 -L rootfs ${DRIVE}2 &> /dev/null
-mkfs.vfat -F 32 -n data ${DRIVE}3 &> /dev/null
+mkfs.ext4 -L data ${DRIVE}3 &> /dev/null
 
 echo "[Copying files...]"
 
