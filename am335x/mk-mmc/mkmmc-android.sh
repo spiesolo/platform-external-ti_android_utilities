@@ -71,7 +71,8 @@ CYLINDERS=`echo $SIZE/255/63/512 | bc`
 echo CYLINDERS - $CYLINDERS
 {
 echo ,9,0x0C,*
-echo ,$(expr $CYLINDERS / 2),,-
+echo ,$(expr $CYLINDERS / 4),,-
+echo ,$(expr $CYLINDERS / 4),,-
 echo ,,0x0C,-
 } | sfdisk -D -H 255 -S 63 -C $CYLINDERS $DRIVE &> /dev/null
 
@@ -84,7 +85,8 @@ fi
 
 mkfs.vfat -F 32 -n boot ${DRIVE}1 &> /dev/null
 mkfs.ext4 -L rootfs ${DRIVE}2 &> /dev/null
-mkfs.ext4 -L data ${DRIVE}3 &> /dev/null
+mkfs.ext4 -L usrdata ${DRIVE}3 &> /dev/null
+mkfs.vfat -F 32 -n data ${DRIVE}4 &> /dev/null
 
 echo "[Copying files...]"
 
@@ -109,9 +111,9 @@ umount ${DRIVE}2
 if [ "$7" ]
 then
 	echo "[Copying all clips to data partition]"
-	mount ${DRIVE}3 /mnt
+	mount ${DRIVE}4 /mnt
 	cp -r $7/* /mnt/
-	umount ${DRIVE}3
+	umount ${DRIVE}4
 fi
 
 echo "[Done]"
