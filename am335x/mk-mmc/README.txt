@@ -8,9 +8,10 @@ Pre-Requesites
 
 What script will do
 -------------------
-The mkmmc-android.sh partitions the MMC/SD card into three partiions namely boot, rootfs and data.
+The mkmmc-android.sh partitions the MMC/SD card into four partiions namely boot, rootfs, usrdata and data.
 The script will then put the boot images on boot partition and extracts the android rootfs-rootfs_*.tar.bz2 to rootfs partition.
 Finally the script will copy the Media clips to the data partition and START_HERE folder to boot partition.
+The usrdata partition is used as the emulated internal sdcard storage in Android, while the data partition shows as external sdcard storage.
 
 How to invoke the script
 ------------------------
@@ -35,6 +36,9 @@ Details: In this case, the script will assume default locations for BootImages, 
          sudo ./mkmmc-android /dev/sdc Boot_Images/MLO Boot_Images/u-boot.img Boot_Images/uImage Boot_Images/uEnv.txt Filesystem/rootfs.tar.bz2 Media_Clips START_HERE
          If you are in a particular Board Specific Directory, extracted from DevKit Release, then you can prepare the sd card by executing
          sudo ./mkmmc-android.sh <device>, to prepare sd card.
+
+On some hosts, the sdcard may get mounted as /dev/*mmcblk* e.g /dev/block/mmcblk0{p1,p2} etc instead of /dev/sdc{1,2} etc.
+Please adjust <device> accordingly.
 
 Warning
 -------
