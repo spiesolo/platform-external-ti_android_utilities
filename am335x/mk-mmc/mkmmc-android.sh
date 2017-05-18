@@ -46,6 +46,11 @@ then
 	exit
 fi
 
+if [ $EUID -ne 0 ] ; then
+	echo "This tool requires root to run"
+	exit 1
+fi
+
 echo "All data on "$1" now will be destroyed! Continue? [y/n]"
 read ans
 if ! [ $ans == 'y' ]
@@ -62,19 +67,34 @@ echo "[Partitioning $1...]"
 DRIVE=$1
 dd if=/dev/zero of=$DRIVE bs=1024 count=1024 &>/dev/null
 
-SIZE=`fdisk -l $DRIVE | grep Disk | awk '{print $5}'`
+fdisk $DRIVE << EOF
+n
+p
+1
 
-echo DISK SIZE - $SIZE bytes
++64M
+n
+p
+2
 
-CYLINDERS=`echo $SIZE/255/63/512 | bc`
++256M
+n
+p
+3
 
-echo CYLINDERS - $CYLINDERS
-{
-echo ,9,0x0C,*
-echo ,$(expr $CYLINDERS / 4),,-
-echo ,$(expr $CYLINDERS / 4),,-
-echo ,,0x0C,-
-} | sfdisk -D -H 255 -S 63 -C $CYLINDERS $DRIVE &> /dev/null
++256M
+n
+p
+
+
+t
+1
+c
+t
+4
+c
+w
+EOF
 
 echo "[Making filesystems...]"
 
